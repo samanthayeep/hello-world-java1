@@ -1,0 +1,58 @@
+apply plugin: 'java'
+apply plugin:'jacoco'
+jacoco {
+    toolVersion = "0.8.7"
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+//root folder
+group = 'com.example'
+version = 'V1'
+
+repositories {
+    mavenCentral()
+}
+
+//download the junit
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+test {
+    // Specify the directory containing test classes
+    testClassesDirs = sourceSets.test.output.classesDirs
+
+    // Optionally configure test options
+    testLogging {
+        // Configure which events to log during test execution
+        events 'passed', 'skipped', 'failed'
+    }
+    //finalized by the report
+    finalizedBy jacocoTestReport
+}
+
+//build jar file
+ jar {
+    manifest {
+        attributes 'Main-Class': 'com.example.HelloWorld'        
+    }
+
+    from sourceSets.main.output  // Include compiled classes in the JAR
+    archiveBaseName = 'hello-world-java'  // Name of the JAR file
+    destinationDirectory = file('build/libs')  // Output directory for the JAR file
+}
+
+//generate the report using the report
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+
+
+
